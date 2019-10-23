@@ -1,5 +1,6 @@
 package com.lar.store.web;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lar.store.pojo.User;
 import com.lar.store.service.impl.RegisteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,14 @@ public class registe {
         ModelAndView modelAndView=new ModelAndView("registe");
         return modelAndView;
     }
-    @RequestMapping(value = "/registe",method = RequestMethod.POST)
+    @RequestMapping(value = "/registe",method = RequestMethod.GET)
     public String doregiste(User user){
-        //
+        user.setInfokey(0);
         System.out.println(user);
-        return "";
+        registeServiceImpl.addAccount(user);
+
+        return JSONObject.toJSONString("{status:1}");
+
     }
     @RequestMapping(value = "/checkAccount",method = RequestMethod.GET)
     public String account_check(){

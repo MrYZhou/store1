@@ -18,11 +18,11 @@
         <h2>注册新会员</h2>
         <div class="row container">
             <div class="col offset-md-1">
-                <form class="form-group">
+                <form class="form-group" action="/registe">
                     <label for="account">用户名:</label>
-                    <input type="text" data-toggle="tooltip"  title="" class="col-sm-5 form-control" id="account" placeholder="输入用户名">
+                    <input type="text" data-toggle="tooltip"  name="account" title="" class="col-sm-5 form-control" id="account" placeholder="输入用户名">
                     <label for="pwd">密码:</label>
-                    <input type="password" class="col-sm-5 form-control" id="pwd" placeholder="输入密码">
+                    <input type="password" name="pwd" class="col-sm-5 form-control" id="pwd" placeholder="输入密码" >
                     <label for="confirm">确认密码:</label>
                     <input type="password" class="col-sm-5 form-control" id="confirm" placeholder="再次输入">
                     <button type="submit" class="btn btn-success">注册</button>
