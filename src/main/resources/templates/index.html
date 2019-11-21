@@ -12,7 +12,10 @@
                 cid:8,
                 uri:"products",
                 beans:[],
-                pagination:{}
+                pagination:{},
+                sdirection:1,
+                pdirection:1,
+
             },
             mounted:function () {
                 this.list(0,this.cid);
@@ -20,6 +23,7 @@
             methods:{
                 change:function(cid){
                     this.cid=cid;
+                    list(0,cid)
                 },
                 getCategory:function(cid){
                     var url = "categories/"+cid;
@@ -41,6 +45,45 @@
                 },
                 jumpByNumber: function(start){
                     jumpByNumber(start,vue);
+                },
+                changeArr:function (args) {
+                    arr=this.beans;
+                    if(args==='new'){
+
+                      this.beans.reverse()
+                    }
+                    if(args==='sale'){
+                        if((this.sdirection)==1){
+                            arr.sort(
+                            (a,b)=> a.salenum-b.salenum
+                            )
+                        }else {
+                            arr.sort(function (a,b) {
+                                a=a.salenum
+                                b=b.salenum
+                                return (b-a);
+                            })
+                        }
+                        this.beans=arr;
+                        this.sdirection=-this.sdirection;
+                    }
+                    if(args==='price'){
+                        if((this.pdirection)==-1){
+                            arr.sort(function (a,b) {
+                                a=a.price
+                                b=b.price
+                                return (b-a);
+                            })
+                        }else {
+                            arr.sort(function (a,b) {
+                                a=a.price
+                                b=b.price
+                                return -(b-a);
+                            })
+                        }
+                        this.beans=arr;
+                        this.pdirection=-this.pdirection;
+                    }
                 }
             }
         })
@@ -63,6 +106,7 @@
             </ul>
         </div>
     </div>
+
     <div class="center">
         <div class="main-guide ">
             <ul class="clearfix">
@@ -89,21 +133,21 @@
             <div class="left-content left">
                 <ul class="left-menu">
                     <li><span>全部分类</span></li>
-                    <li><a href="">cpu<b> > </b></a></li>
-                    <li><a href="">显卡</a></li>
+                    <li @click="change(8)"><a href="">cpu<b> > </b></a></li>
+                    <li @click="change(8)"><a href="">显卡<b> > </b></a></li>
                 </ul>
             </div>
             <div class="right-content right">
                 <ul class="clearfix topbar">
-                    <li><span>新品</span></li>
-                    <li><span>销量</span></li>
-                    <li><span>价格</span></li>
+                    <li @click="changeArr('new')"><span>新品</span></li>
+                    <li @click="changeArr('sale')"><span>销量</span></li>
+                    <li @click="changeArr('price')"><span>价格</span></li>
                 </ul>
                 <div class="product-wrap">
                     <ul class="clearfix">
                         <li v-for="bean in beans">
                             <div>
-                                <a href="" >
+                                <a :href="'/detail?p='+bean.id" target="_blank">
                                     <img :src="'static/img/product/'+bean.id+'.jpg'" alt="">
                                     <p>{{bean.goodsname}}</p>
                                     <sup>￥</sup><i>{{bean.price}}</i>

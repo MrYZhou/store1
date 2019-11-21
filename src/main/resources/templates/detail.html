@@ -1,13 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-详情
-</body>
-<script>
+<head th:include="include/adminHeader::html('商品详情页')" >
 
+<body>
+<script>
+    $(function () {
+        var uri='products'
+        var vue=new Vue({
+            el:'#detail',
+            data:{
+                pid:0,
+                product:{}
+            },
+            mounted:function () {
+                this.get()
+            },
+            methods:{
+                get:function () {
+                    var id=getUrlParms("p");
+                    this.pid=id;
+                    //发送请求详情页的数据，product，review,property
+                    var url=uri+"/"+this.pid;
+                    axios.get(url).then(function (response) {
+                        this.product=response.data
+                    })
+                }
+            }
+        })
+    })
 </script>
+<div id="detail">
+    <div class="topbar">
+        <div class="left">首页</div>
+        <div class="right">
+            <ul>
+                <li th:if="${name!=null}"  >
+                    <a th:href="@{'personPage'}" th:text="${name.account}"></a>
+                </li>
+                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
+                <li th:if="${name==null}"><a href="/registePage">注册</a></li>
+                <!--<li><a ">个人中心</a></li>-->
+                <li><a href="/car/${name.id}">购物车</a></li>
+                <li><a href="/logout">退出</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="detail_center">
+        <div class="left left-wrap">
+            ddd
+        </div>
+        <div class="right right-product-show w900">
+               <div class="left product-img">
+                   <img :src="'static/img/product/'+14+'.jpg'" alt="123">
+               </div>
+                <div class="left product-right-wrap">
+                    <ul>
+                        <li>
+                            <span>价格</span><sup>￥</sup><strong>666</strong>
+                        </li>
+                        <li>
+                            <span>已售</span><i>0</i>件
+                        </li>
+                    </ul>
+                    <div class="buy">立即购买</div>
+                    <div class="add-cart">加入购物车</div>
+                </div>
+        </div>
+    </div>
+
+</div>
+</body>
 </html>
