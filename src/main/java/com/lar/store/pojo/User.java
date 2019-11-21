@@ -15,7 +15,7 @@ public class User {
     private int id;
     private String account;
     private String pwd;
-    @Nullable
+
     private int infokey;
 
     public int getId() {

@@ -9,11 +9,7 @@ import sun.misc.Contended;
 
 @RestController
 public class basic {
-    @RequestMapping(value = "/index",method = RequestMethod.GET)
-    public ModelAndView index(){
-        ModelAndView mv=new ModelAndView("index");
-        return mv;
-    }
+
     @RequestMapping("/hello")
     public String hello()
     {

@@ -1,36 +1,40 @@
 package com.lar.store.web;
 
-import com.alibaba.fastjson.JSONObject;
+import com.lar.store.pojo.Status;
 import com.lar.store.pojo.User;
-import com.lar.store.service.impl.RegisteServiceImpl;
+import com.lar.store.service.RegisteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class registe {
     @Autowired
-    RegisteServiceImpl registeServiceImpl;
-    @RequestMapping(value = "/registePage",method = RequestMethod.GET)
-    public ModelAndView registePage(){
+    RegisteService registeService;
 
-        ModelAndView modelAndView=new ModelAndView("registe");
-        return modelAndView;
+    @GetMapping(value = "registe")
+    public  String registe(){
+        return "registePage";
     }
-    @RequestMapping(value = "/registe",method = RequestMethod.GET)
-    public String doregiste(User user){
-        user.setInfokey(0);
+
+    @RequestMapping(value = "registe",method = RequestMethod.POST)
+    public ModelAndView doregiste(User user){
         System.out.println(user);
-        registeServiceImpl.addAccount(user);
-
-        return JSONObject.toJSONString("{status:1}");
+        user.setInfokey(0);
+        registeService.addAccount(user);
+        return new ModelAndView("/login");
 
     }
-    @RequestMapping(value = "/checkAccount",method = RequestMethod.GET)
-    public String account_check(){
-        //
-        return "";
+    @GetMapping(value = "checkaccount")
+    public  String check(@RequestParam(value = "account")String account){
+        //System.out.println(account);
+        if(registeService.checkAccount(account)){
+            System.out.println("找到");
+            return "1";
+        }
+        System.out.println("没找到");
+        return "0";
     }
+
+
 }

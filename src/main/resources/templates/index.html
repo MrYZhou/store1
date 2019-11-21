@@ -1,10 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<head th:include="include/adminHeader::html('首页')" >
+
 </head>
 <body>
-<a href="/loginPage">登录</a>&nbsp;&nbsp;<a href="/registePage">注册</a>
+<script>
+    $(function(){
+        var vue=new Vue({
+            el:".center",
+            data:{
+                cid:8,
+                uri:"products",
+                beans:[],
+                pagination:{}
+            },
+            mounted:function () {
+                this.list(0,this.cid);
+            },
+            methods:{
+                change:function(cid){
+                    this.cid=cid;
+                },
+                getCategory:function(cid){
+                    var url = "categories/"+cid;
+                    axios.get(url).then(function(response) {
+                        vue.category = response.data;
+                    })
+                },
+                //默认先使用显卡的内容
+                list:function(start,cid){
+                    var url =  "categories/"+cid+"/"+this.uri+"?start="+start;
+                    axios.get(url).then(function(response) {
+                        console.log(response)
+                        vue.pagination = response.data;//分页的属性
+                        vue.beans = response.data.content;
+                    });
+                },
+                jump: function(page){
+                    jump(page,vue); //定义在adminHeader.html 中
+                },
+                jumpByNumber: function(start){
+                    jumpByNumber(start,vue);
+                }
+            }
+        })
+    })
+</script>
+
+<div class="wrap">
+    <div class="topbar">
+        <div class="left">首页</div>
+        <div class="right">
+            <ul>
+                <li th:if="${name!=null}"  >
+                    <a th:href="@{'personPage'}" th:text="${name.account}"></a>
+                </li>
+                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
+                <li th:if="${name==null}"><a href="/registePage">注册</a></li>
+                <!--<li><a ">个人中心</a></li>-->
+                <li><a href="/car/${name.id}">购物车</a></li>
+                <li><a href="/logout">退出</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="center">
+        <div class="main-guide ">
+            <ul class="clearfix">
+                <li>
+                    <a href="">台式主机</a>
+                </li>
+                <li>
+                    <a href="">笔记本</a>
+                </li>
+                <li>
+                    <a href="">天梯图</a>
+                </li>
+            </ul>
+        </div>
+        <div class="search-area w900">
+            <div class="searchbar">
+                <form action="" >
+                    <input type="text" class="searchcontent" name="sc">
+                    <input type="submit" class="submit" placeholder="" value="搜索">
+                </form>
+            </div>
+        </div>
+        <div class="p-show w900">
+            <div class="left-content left">
+                <ul class="left-menu">
+                    <li><span>全部分类</span></li>
+                    <li><a href="">cpu<b> > </b></a></li>
+                    <li><a href="">显卡</a></li>
+                </ul>
+            </div>
+            <div class="right-content right">
+                <ul class="clearfix topbar">
+                    <li><span>新品</span></li>
+                    <li><span>销量</span></li>
+                    <li><span>价格</span></li>
+                </ul>
+                <div class="product-wrap">
+                    <ul class="clearfix">
+                        <li v-for="bean in beans">
+                            <div>
+                                <a href="" >
+                                    <img :src="'static/img/product/'+bean.id+'.jpg'" alt="">
+                                    <p>{{bean.goodsname}}</p>
+                                    <sup>￥</sup><i>{{bean.price}}</i>
+                                    <span>销量</span><i>{{bean.salenum}}</i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div th:replace="include/adminPage::html" ></div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+<!--<footer th:replace="include/adminFooter::html" ></footer>-->
 </body>
 </html>

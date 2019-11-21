@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/adminHeader::html('个人中心')" >
+<body>
+<div class="wrap">
+    <div class="topbar">
+        <div class="left">首页</div>
+        <div class="right">
+            <ul>
+                <li th:if="${name!=null}"  >
+                    <a th:href="@{'personPage/'+${name.id}}" th:text="${name.account}"></a>
+                </li>
+                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
+                <li><a href="/registePage">注册</a></li>
+
+
+                <!--<li><a ">个人中心</a></li>-->
+                <li><a href="/car/${name.id}">购物车</a></li>
+                <li><a href="/logout">退出</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="center">
+
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>注册页面</title>
-    <!-- 新 Bootstrap4 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../webapp/css/registe.css">
+<head th:include="include/adminHeader::html('注册页面')" ></head>
 
-
-</head>
 <body>
 
 <div class="container-fluid">
@@ -18,7 +10,7 @@
         <h2>注册新会员</h2>
         <div class="row container">
             <div class="col offset-md-1">
-                <form class="form-group" action="/registe">
+                <form class="form-group" action="registe" method="post">
                     <label for="account">用户名:</label>
                     <input type="text" data-toggle="tooltip"  name="account" title="" class="col-sm-5 form-control" id="account" placeholder="输入用户名">
                     <label for="pwd">密码:</label>
@@ -28,41 +20,43 @@
                     <button type="submit" class="btn btn-success">注册</button>
                 </form>
             </div>
-
         </div>
-
-
     </div>
 
 </div>
 </body>
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-<script src="../webapp/js/jquery.min.js"></script>
-<!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
-<script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-<!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
-<script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <script>
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
+
     $("button").eq(0).click(function () {
         //提交form表单
-        var account= $("input").eq(0).val();
-        var pwd=$("input").eq(1).val();
-        var rpwd=$("input").eq(2).val();
-        if(pwd!==rpwd){
 
-            return;
+        var rpwd=$("input").eq(2).val();
+
+        var useraccount = $("input").eq(0).val();
+        var userpwd = $("input").eq(1).val();
+
+        if(userpwd!==rpwd){
+            confirm("两次密码输入不一致");
+            return false;
             //提交
+        }else {
         }
         console.log(account,pwd);
    })
 
     $("input").eq(0).blur(function () {
-        //发送请求
+        //发送请求，优化逻辑
+        console.log("发送请求")
+        axios.get("/checkaccount?account="+$("input").eq(0).val()).then(function(response){
+            console.log(response)
+           if(response.data==1){
+               confirm("用户名已存在")
+               $("input").eq(0).val("");
+               $("input").eq(0).focus()
+           }
+        });
+
     })
 </script>
 </html>
