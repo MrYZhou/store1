@@ -10,20 +10,38 @@
             el:'#detail',
             data:{
                 pid:0,
-                product:{}
+                product:{},
+                buynum:2,
+                totalprice:22
             },
             mounted:function () {
-                this.get()
+                this.get();
             },
             methods:{
                 get:function () {
+
                     var id=getUrlParms("p");
                     this.pid=id;
                     //发送请求详情页的数据，product，review,property
                     var url=uri+"/"+this.pid;
                     axios.get(url).then(function (response) {
-                        this.product=response.data
+                        vue.product=response.data
+                        vue.buynum=1;
+                        vue.totalprice=(vue.product.price)*vue.buynum;
                     })
+                },
+                addCart:function(){
+                    alert("添加到购物车")
+                },
+                num:function (args) {
+                    console.log("price"+this.totalprice)
+                    if(args<0){
+                        this.buynum=0;
+                    }else{
+                        this.buynum=args;
+                    }
+                    this.totalprice=this.product.price*this.buynum;
+
                 }
             }
         })
@@ -56,18 +74,33 @@
                 <div class="left product-right-wrap">
                     <ul>
                         <li>
-                            <span>价格</span><sup>￥</sup><strong>666</strong>
+                            <span>{{product.goodsname}}</span>
+                        </li>
+                        <li>
+                            <span>价格</span><sup>￥</sup><strong>{{product.price}}</strong>
                         </li>
                         <li>
                             <span>已售</span><i>0</i>件
                         </li>
+                        <li>
+                            数量<input type="text" :value="buynum">
+                            <input type="button" value="+" @click="num(buynum+1)">
+                            <input type="button" value="-" @click="num(buynum-1)">
+                        </li>
+                        <li>
+                            价格 <sup>￥</sup><span>{{totalprice}}</span>
+                        </li>
                     </ul>
-                    <div class="buy">立即购买</div>
-                    <div class="add-cart">加入购物车</div>
+                    <div class="buy left"><a href="'/buyPage?'+product.id">立即购买</a></div>
+                    <div class="add-cart left" @click="addCart" title="加入购物车">
+                        <span>加入购物车</span>
+                    </div>
                 </div>
         </div>
     </div>
 
 </div>
+
+
 </body>
 </html>
