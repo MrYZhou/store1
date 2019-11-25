@@ -6,16 +6,24 @@
 <script>
     $(function () {
         var uri='products'
+
         var vue=new Vue({
             el:'#detail',
             data:{
                 pid:0,
                 product:{},
                 buynum:2,
-                totalprice:22
+                totalprice:22,
+                uid:0,
+                account:'',
+                pwd:'',
+                user:{}
             },
             mounted:function () {
                 this.get();
+            },
+            created:function(){
+                this.uid=$('#uid').val()
             },
             methods:{
                 get:function () {
@@ -30,13 +38,48 @@
                         vue.totalprice=(vue.product.price)*vue.buynum;
                     })
                 },
+                login:function(){
+                    if(!checkEmpty(this.account, "账号"))
+                        return;
+                    if(!checkEmpty(this.pwd, "密码"))
+                        return;
+                    axios.post("/login",{
+                        account:vue.account,
+                        pwd:vue.pwd,
+                    }).then(function (value) {
+                        vue.uid=value.data.id
+                        console.log(vue.uid)
+                        // vue.user=value.data
+                        $('#myModal').modal('hide');
+                        window.location.reload()
+                    })
+
+                },
                 addCart:function(){
-                    alert("添加到购物车")
+
+                    if(this.uid===undefined||this.uid===0){
+                       //弹出模态框
+                        $("#myModal").modal({
+                            backdrop: "static",
+                            keyboard: false,
+                        });
+                    }else {
+                        axios.post("/carts",{
+                            buynum:vue.buynum,
+                            uid:vue.uid,
+                            product:vue.product,
+                            subprice:vue.totalprice
+                        }).then(function (value) {
+                            alert("ok")
+                        })
+                    }
+
                 },
                 num:function (args) {
                     console.log("price"+this.totalprice)
-                    if(args<0){
-                        this.buynum=0;
+                    if(args===0){
+                        confirm("数量至少为1")
+                        this.buynum=1;
                     }else{
                         this.buynum=args;
                     }
@@ -48,17 +91,19 @@
     })
 </script>
 <div id="detail">
+    <input type="hidden"  id="uid" th:if="${name!=null}" th:value="${name.id}">
     <div class="topbar">
         <div class="left">首页</div>
         <div class="right">
             <ul>
+
                 <li th:if="${name!=null}"  >
                     <a th:href="@{'personPage'}" th:text="${name.account}"></a>
                 </li>
-                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
+                <li th:if="${name==null}"><a href="/loginPage" target="_blank" id="login">登录</a></li>
                 <li th:if="${name==null}"><a href="/registePage">注册</a></li>
                 <!--<li><a ">个人中心</a></li>-->
-                <li><a href="/car/${name.id}">购物车</a></li>
+                <li><a :href="'/cartPage?sc='+uid">购物车</a></li>
                 <li><a href="/logout">退出</a></li>
             </ul>
         </div>
@@ -69,7 +114,7 @@
         </div>
         <div class="right right-product-show w900">
                <div class="left product-img">
-                   <img :src="'static/img/product/'+14+'.jpg'" alt="123">
+                   <img :src="'static/img/product/'+pid+'.jpg'"  class="img-thumbnail" :alt="product.goodsname">
                </div>
                 <div class="left product-right-wrap">
                     <ul>
@@ -91,7 +136,7 @@
                             价格 <sup>￥</sup><span>{{totalprice}}</span>
                         </li>
                     </ul>
-                    <div class="buy left"><a href="'/buyPage?'+product.id">立即购买</a></div>
+                    <div class="buy left"><a :href="'/buyPage?id='+product.id+'&buynum='+buynum">立即购买</a></div>
                     <div class="add-cart left" @click="addCart" title="加入购物车">
                         <span>加入购物车</span>
                     </div>
@@ -99,6 +144,33 @@
         </div>
     </div>
 
+    <!--模态框-->
+    <div class="modal fade"   id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">订单信息</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="message-text" class="control-label" >账号:</label>
+                        <input class="form-control" id="message-text" v-model="account"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text2" class="control-label">密码:</label>
+                        <input class="form-control" id="message-text2" v-model="pwd"/>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">继续看看</button>
+                    <button type="button" class="btn btn-success" @click="login">登录</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 
 

@@ -7,7 +7,7 @@
 <script>
     $(function(){
         var vue=new Vue({
-            el:".center",
+            el:".wrap",
             data:{
                 cid:8,
                 uri:"products",
@@ -15,10 +15,14 @@
                 pagination:{},
                 sdirection:1,
                 pdirection:1,
+                uid:0
 
             },
             mounted:function () {
                 this.list(0,this.cid);
+            },
+            created:function(){
+                this.uid=$('#uid').val()
             },
             methods:{
                 change:function(cid){
@@ -91,6 +95,7 @@
 </script>
 
 <div class="wrap">
+    <input type="hidden"  id="uid" th:if="${name!=null}" th:value="${name.id}">
     <div class="topbar">
         <div class="left">首页</div>
         <div class="right">
@@ -101,7 +106,7 @@
                 <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
                 <li th:if="${name==null}"><a href="/registePage">注册</a></li>
                 <!--<li><a ">个人中心</a></li>-->
-                <li><a href="/car/${name.id}">购物车</a></li>
+                <li><a :href="'/carts/'+uid">购物车</a></li>
                 <li><a href="/logout">退出</a></li>
             </ul>
         </div>

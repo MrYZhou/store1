@@ -1,38 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="include/adminHeader::html('登录页面')" ></head>
-<!--<head>-->
-    <!--<meta charset="UTF-8">-->
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
-    <!--<title>页面</title>-->
-  <!---->
+<body style="background:url('static/img/site/timg.jpg') no-repeat center/100%;">
+<script>
 
+    $(function () {
+        var vue=new Vue({
+            el:'.workarea',
+            data:{
 
-<!--</head>-->
-<body>
+            },
+            mounted:function () {
 
-<div class="container-fluid">
-    <div class="container bg-light text-dark">
+            },
+            methods:{
+                login:function () {
 
-        <h2>登录</h2>
-        <div class="row container">
-            <div class="col offset-md-1">
-                <form class="form-group" action="/login" method="post">
-                    <label for="account">用户名:</label>
-                    <input type="text" data-toggle="tooltip"  name="account" title="" class="col-sm-5 form-control" id="account" placeholder="输入用户名">
-                    <label for="pwd">密码:</label>
-                    <input type="password" class="col-sm-5 form-control" name="pwd" id="pwd" placeholder="输入密码">
+                }
+            }
+        })
+    })
+</script>
+<div class="workarea">
+    <div class="container-fluid" >
+        <div class="container bg-light" >
+            <div class="panel panel-info" style="width: 600px;display:block;margin :20px auto;">
+                <div class="panel-heading">登录</div>
+                <div class="panel-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="account">用户名:</label>
+                            <input type="text" data-toggle="tooltip"  name="account" title="" class="col-sm-5 form-control" id="account" placeholder="输入用户名">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        </div>
 
-                    <button type="submit" class="btn btn-success">登录</button>
-                </form>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> 记住密码
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-danger" @click="login">登录</button>
+                    </form>
+                </div>
             </div>
-
         </div>
 
-
     </div>
-
 </div>
+
 </body>
 
 <script>

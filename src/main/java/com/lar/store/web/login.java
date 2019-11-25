@@ -15,23 +15,21 @@ public class login {
     LoginService loginService;
 
     @RequestMapping(value = "login",method = RequestMethod.POST)
-    public ModelAndView dologin(User user,HttpSession httpSession){
+    public User dologin(@RequestBody User user,HttpSession httpSession){
         //进行登录
-        System.out.println("------"+user);
+        System.out.println("进行登录------"+user);
 
         if(user.getAccount()!=null){
             String pwd=loginService.get_pwd(user.getAccount());
-
             if(pwd.equals(user.getPwd())){
+                System.out.println("存入session");
                 httpSession.setAttribute("name",loginService.getUser(user.getAccount()));
-
-
-                return new ModelAndView("redirect:index");
+                return user;
             }else{
-                return new ModelAndView("redirect:loginPage");
+                return null;//登录页面
             }
         }
-        return new ModelAndView("redirect:loginPage");
+        return null;
     }
     @GetMapping(value = "logout")
     public  ModelAndView logout(HttpSession httpSession){
