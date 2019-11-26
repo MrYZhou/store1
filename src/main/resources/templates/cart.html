@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="include/adminHeader::html('个人购物车')" ></head>
+<body>
+<script>
+
+    $(function () {
+        var uri='carts'
+        var orderurl="orders"
+        var vue=new Vue({
+            el:'.workarea',
+            data:{
+                uid:0,
+                carts:[],
+                orderitem:[],
+                info:{}
+            },
+            mounted:function () {
+                this.get();
+            },methods:{
+                get:function() {
+                    var uid=getUrlParms("sc")
+                    var url=uri+"/"+uid;
+                    this.uid=uid;
+                    axios.get(url).then(function (value) {
+                        vue.carts=value.data;
+                        // console.log(value.data)
+
+                    })
+                },
+                num:function (args,obj) {
+
+                    if(args===0){
+                        confirm("数量至少为1")
+                        obj.buynum=1;
+                    }else{
+                        obj.buynum=args;
+                    }
+                     obj.subprice=obj.product.price*obj.buynum;
+
+                },
+                createOrders:function () {
+                    if(!checkEmpty(this.info.address, "地址"))
+                        return;
+                    if(!checkEmpty(this.info.name, "收货人"))
+                        return;
+                    if(!checkEmpty(this.info.phone, "联系电话"))
+                        return;
+
+                    var arr=this.carts;
+                    console.log("arr"+arr)
+                    for(var i=0;i<arr.length;i++){
+                        axios.post(orderurl,{
+                            uid:vue.uid,
+                            status:1,
+                            info:vue.info,
+                            buynum:vue.carts[i].buynum,
+                            product:arr[i].product
+                        }).then(function (response) {
+                        })
+                    }
+
+
+                }
+            }
+        })
+    })
+</script>
+
+<div class="workarea">
+    <div class="cart-show">
+        <ul>
+            <li v-for="cart in carts">
+                <div>
+                    <img :src="'static/img/product/'+cart.product.id+'.jpg'" alt="">
+                </div>
+                <span>{{cart.product.goodsname}}}</span>
+                单价<span>{{cart.product.price}}</span>
+                <input type="button" value="+" @click="num(cart.buynum+1,cart)">
+                数量<input type="text" :value="cart.buynum">
+                <input type="button" value="-" @click="num(cart.buynum-1,cart)">
+                价格 <span>{{cart.subprice}}</span>
+                <a href="">删除</a>
+            </li>
+        </ul>
+    </div>
+    <div class="pay">
+        <div class="orderConfirm">
+            <button  id='modal' type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
+                确认购买
+            </button>
+        </div>
+        <div class="modal fade"   id="myModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">订单信息</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="message-text" class="control-label" >地址:</label>
+                            <textarea class="form-control" id="message-text" v-model="info.address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text2" class="control-label">联系人:</label>
+                            <input class="form-control" id="message-text2" v-model="info.name"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text3" class="control-label">电话:</label>
+                            <input class="form-control" id="message-text3" v-model="info.phone"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">我在想想</button>
+                        <button type="button" class="btn btn-primary" @click="createOrders">生成订单</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+</body>
+</html>

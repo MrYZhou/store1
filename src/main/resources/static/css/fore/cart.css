@@ -1,0 +1,11 @@
+.cart-show{
+
+    width: 1100px;
+    border:1px solid red;
+}
+.cart-show img{
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+
+}

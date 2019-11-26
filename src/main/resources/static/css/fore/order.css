@@ -1,0 +1,26 @@
+
+div.order-wrap{
+    width: 950px;
+    margin: 20px auto;
+    padding: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+div.order-wrap  .order-left ul{
+    display: inline-block;
+    width: 400px;
+}
+div.order-wrap ul li{
+
+    boder-radius:10px;
+    margin: 10px 0;
+}
+div.order-wrap ul li input{
+    display: inline-block;
+    width: 200px;
+    height: 35px;
+    text-indent: 10px;
+
+}

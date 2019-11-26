@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="include/adminHeader::html('订单管理')" ></head>
+<body>
+<script>
+
+    $(function () {
+
+
+        var vue=new Vue({
+            el:'#workingArea',
+            data:{
+                orderitems:[],
+                pagination:{},
+            },
+            mounted:function () {
+                this.list(0)
+            },
+            created:function(){
+
+            },
+            methods:{
+                list:function (start) {
+                    axios.get('orders?start='+start).then(function (response) {
+                        // console.log(response)
+                        // console.log(response.data.content)
+                        vue.orderitems=response.data.content
+                        vue.pagination = response.data;
+
+                    })
+                },
+                jump: function(page){
+                    jump(page,vue); //定义在adminHeader.html 中
+                },
+                jumpByNumber: function(start){
+                    jumpByNumber(start,vue);
+                }
+
+            }
+        })
+    })
+</script>
+<div th:replace="include/adminNavigator::html" ></div>
+<div id="workingArea" >
+    <h1 class="label label-info" >订单管理</h1><br><br>
+    <ul class="breadcrumb">
+        <li><a href="#">全部订单</a></li>
+        <li><a href="#">已处理</a></li>
+        <li class="active">未发货</li>
+    </ul>
+    <br>
+
+    <div class=" container-fluid" style="margin: 0 auto;">
+        <table class="table table-striped table-hover table-condensed ">
+            <thead>
+            <tr>
+                <td>#</td>
+                <td>订单状态</td>
+                <td>收货人</td>
+                <td>电话</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="order in orderitems">
+                <td>{{order.id}}</td>
+                <td v-if="order.status==1">待处理</td>
+                <td v-if="order.status==2">已发货</td>
+                <td>{{order.info.name}}</td>
+                <td>{{order.info.phone}}</td>
+                <td id="look"><a class="btn btn-sm btn-info" :href="'orders_detail?sc='+order.uid">查看用户订单</a></td>
+
+
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="include/adminPage::html" ></div>
+
+</div>
+
+</body>
+</html>

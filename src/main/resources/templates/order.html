@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="include/adminHeader::html('商品订单页')" >
+<body>
+<script>
+    $(function () {
+        var infourl='info';//上传至info,和orderitem
+        var orderurl='';
+        var uri='products'
+        var vue=new Vue({
+            el:'.workarea',
+            data:{
+                uid:0,
+                pid:0,
+                product:{},
+                buynum:0,
+                info:{},
+            },mounted:function () {
+                this.get()
+            } ,
+            created:function(){
+                    this.uid=$('#uid').val()
+                }
+            ,methods:{
+                get:function () {
+                    var id=getUrlParms("id");//这里的id是商品的id
+                    var buynum=getUrlParms("buynum");
+                    this.buynum=buynum;
+                    this.pid=id;
+                    //发送请求详情页的数据，product，review,property
+                    var url=uri+"/"+this.pid;
+                    axios.get(url).then(function (response) {
+                        vue.product=response.data
+                        vue.totalprice=(vue.product.price)*vue.buynum;
+                    })
+                },
+                createOrder:function () {
+                    //orderd的信息->info表+product的id ->orderitem
+                    if(!checkEmpty(this.info.address, "地址"))
+                        return;
+                    if(!checkEmpty(this.info.name, "收货人"))
+                    return;
+                    if(!checkEmpty(this.info.phone, "联系电话"))
+                    return;
+
+                    axios.post(infourl,{
+                        status:1,
+                        uid:vue.uid,
+                        product:vue.product,
+                        info:vue.info
+                    }).then(function (response) {
+                    })
+                }
+            }
+        })
+    })
+</script>
+
+<div class="workarea">
+    <input type="hidden"  id="uid" th:if="${name!=null}" th:value="${name.id}">
+    <div class="topbar">
+        <div class="left">首页</div>
+        <div class="right">
+            <ul>
+                <li th:if="${name!=null}"  >
+                    <a th:href="@{'personPage'}" th:text="${name.account}"></a>
+                </li>
+                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
+                <li th:if="${name==null}"><a href="/registePage">注册</a></li>
+                <!--<li><a ">个人中心</a></li>-->
+                <li><a :href="'/cart/'+uid">购物车</a></li>
+                <li><a href="/logout">退出</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="order-wrap">
+        <div class="left order-left">
+            <ul>
+                <!--<li><span>地址</span><input type="text"></li>-->
+                <li >
+                    <input type="text" placeholder="地址" v-model="info.address">
+                </li>
+                <li>
+                    <input type="text" placeholder="收货人" v-model="info.name">
+                </li>
+                <li>
+                    <input type="text" placeholder="联系方式" v-model="info.phone">
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info" @click="createOrder">确定订单</button>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+@charset 'utf-8';
+*{
+
+    border:none;
+}
+div,body,ul,li,ol,p,form,input,h2,h3,span{
+    margin:0;
+    padding:0;
+
+}
+body{
+    font:12px/1.6 "Microsoft YaHei";
+    color:#333;
+    overflow-x:hidden;
+    background-color:#fff;
+}
+a{
+    text-decoration:none;
+    color:#666;
+}
+ul,ol{
+    list-style:none;
+}
+img{
+    margin:0;
+    padding:0;
+}
+/*float清除*/
+.clearfix:after{
+    content:'';
+    display:block;
+    clear:both;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}

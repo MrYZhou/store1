@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="include/adminHeader::html('用户订单信息页面')" >
+<body>
+<script>
+    $(function () {
+
+        var vue = new Vue({
+            el: '#workingArea',
+            data: {
+                beans: [],
+                over:false,
+                uid: 0,
+                totalprice:0
+            }, mounted: function () {
+                this.get(1)
+            },
+            created: function () {
+                this.uid = $('#uid').val()
+            }
+            , methods: {
+                get: function (status) {
+                    this.totalprice=0
+                    var uid = getUrlParms("sc");
+                    this.uid = uid;
+                    axios.get('orders/'+uid+'/'+status).then(function (value) {
+                        vue.beans=value.data;
+                        console.log(vue.beans)
+                        for ( bean of vue.beans){
+                            vue.totalprice+=bean.product.price*bean.buynum
+                        }
+                    })
+                },
+                confirmThis:function(id){
+                    //将订单的status标记为2
+                    // for (let i = 0; i < vue.beans.length; i++) {
+                    //     if(vue.beans[i].id==id)vue.beans[i]=={}
+                    // }
+                    axios.delete('orders/'+id).then(function (response) {
+                        if(response.status==200){
+                            vue.get(1)
+                        }
+                    })
+               },
+
+                confirmALL:function () {
+                    var re=confirm("是否全部处理")
+                    if (re==false)return
+                    for ( bean of vue.beans){
+                        axios.delete('orders/'+bean.id).then(function (response) {
+                            if(response.status==200){
+                            }
+                        })
+                    }
+                    this.get(1)
+                }
+            }
+        })
+    })
+</script>
+<div th:replace="include/adminNavigator::html" ></div>
+<div id="workingArea" >
+    <h1 class="label label-info" >用户订单信息</h1><br><br>
+    <br>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">订单列表</h3>
+        </div>
+        <div class="panel-body">
+
+            <div v-if="totalprice==0">该用户的订单已经都处理完毕<i style="color: #4cae4c" class="glyphicon glyphicon-ok"></i></div>
+            <div class="list-group" v-for="bean in beans" style="padding-bottom:10px;border-bottom: 1px solid #ccc">
+                <img :src="'static/img/product/'+bean.product.id+'.jpg'" alt="..." style="width: 150px;height: 70px;">
+                <div style="display:inline-block;vertical-align: top;">
+                    <!--  -->
+                    <ul style="display:inline-block;width: 200px;margin: 0 200px 0 100px;">
+                        <li><span>商品名</span><i>{{bean.product.goodsname}}</i></li>
+                        <li><span>单价</span><i>{{bean.product.price}}</i></li>
+                        <li><span>购买数量</span><i>{{bean.buynum}}</i></li>
+                    </ul>
+                    <div style="display: inline-block;margin-right: 100px; "  class="pull-right">
+                        <span >发货地址:</span> <i>{{bean.info.address}}</i><br>
+                        <span>小计：</span><i>{{bean.product.price*bean.buynum}}</i>元 <br>
+                        <button class="btn btn-danger btn-sm"  @click="confirmThis(bean.id)">删除该订单</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pull-right" style="color: #D2322D; ">总计：{{totalprice}} 元
+                <button class="btn btn-info " style="margin-left: 13px;" @click="confirmALL">确认发货</button></div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
