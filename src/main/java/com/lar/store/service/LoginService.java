@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 public class LoginService {
     @Autowired
     UserMapper userMapper;
+    public String getUserName(int id){
+        return userMapper.getOne(id).getAccount();
+    }
     //判断登录用户是否存在
     public boolean checkAccount(String a) {
         User u=userMapper.findUserByAccount(a);

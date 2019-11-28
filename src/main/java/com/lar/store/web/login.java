@@ -13,7 +13,10 @@ import javax.servlet.http.HttpSession;
 public class login {
     @Autowired
     LoginService loginService;
-
+    @RequestMapping(value = "useraccount",method = RequestMethod.GET)
+    public String findUserById(@RequestParam(name="id")int id){
+        return loginService.getUserName(id);
+    }
     @RequestMapping(value = "login",method = RequestMethod.POST)
     public User dologin(@RequestBody User user,HttpSession httpSession){
         //进行登录

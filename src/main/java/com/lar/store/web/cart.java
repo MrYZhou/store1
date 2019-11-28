@@ -1,11 +1,14 @@
 package com.lar.store.web;
 
 import com.lar.store.pojo.Cart;
+import com.lar.store.pojo.User;
 import com.lar.store.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.util.List;
 
@@ -15,8 +18,9 @@ public class cart {
     CartService cartService;
 
     @GetMapping("/carts/{uid}")
-    public List<Cart> getCarts(@PathVariable(value = "uid")int uid){
-        System.out.println("ok");
+    public List<Cart> getCarts( @PathVariable(value = "uid")int uid, HttpSession httpSession){
+//        User u= (User) httpSession.getAttribute("name");
+//        System.out.println(u);
         List<Cart> obj=cartService.getCartProducts(uid);
         return  obj;
     }

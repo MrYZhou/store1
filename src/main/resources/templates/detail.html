@@ -98,7 +98,7 @@
             <ul>
 
                 <li th:if="${name!=null}"  >
-                    <a th:href="@{'personPage'}" th:text="${name.account}"></a>
+                    <a :href="'/personPage?sc='+uid" th:text="${name.account}"></a>
                 </li>
                 <li th:if="${name==null}"><a href="/loginPage" target="_blank" id="login">登录</a></li>
                 <li th:if="${name==null}"><a href="/registePage">注册</a></li>

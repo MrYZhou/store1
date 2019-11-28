@@ -85,7 +85,10 @@ public class frontController {
     }
     //cartpage页面
     @GetMapping("/cartPage")
-    public ModelAndView cartPage(){
+    public ModelAndView cartPage(HttpSession httpSession){
+//        User u= (User) httpSession.getAttribute("name");
+//        System.out.println(u);
+//        httpSession.setAttribute("name",u);
         return new ModelAndView("cart");
     }
 
@@ -95,6 +98,14 @@ public class frontController {
         return new ModelAndView("orderSuccess");
     }
 
+    @GetMapping("pc")
+    public ModelAndView pc_change(){
+        return new ModelAndView("personInfoPage");
+    }
 
+    @GetMapping("/commentPage")
+    public ModelAndView commentPage(){
+        return new ModelAndView("comment");
+    }
 
 }

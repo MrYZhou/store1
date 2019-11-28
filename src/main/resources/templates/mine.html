@@ -2,28 +2,228 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:include="include/adminHeader::html('个人中心')" >
 <body>
+<script>
+
+    // $(function () {
+    //     var vue=new Vue({
+    //         el:'.wrap',
+    //         data:{
+    //             uid:0,
+    //         },mounted:function () {
+    //             this.get()
+    //         },methods:{
+    //             get:function () {
+    //                 var uid=getUrlParms("sc");
+    //             }
+    //         }
+    //     })
+    // })
+    $(function () {
+        var vue=new Vue({
+            el:'.wrap',
+            data:{
+                uid:0,
+                orders:[],
+                status:1,
+                year_month:'',
+                date:'',
+                weekday:'',
+                content:'',
+                product:{},
+                star:0,
+                grey_star:5,
+                commentorder:{}
+            },mounted:function () {
+                var uid=getUrlParms("sc");
+                this.uid=uid;
+                this.get(1)
+
+                var day = new Date();
+                this.year_month=day.getFullYear()+"." + (day.getMonth()+1);
+                this.date=day.getDate();
+                this.weekday=day.getDay();
+            }
+            ,methods:{
+                get:function (status) {
+                    // alert("status"+status)
+                    axios.get('orders/'+this.uid+"/"+status).then(function (response) {
+                        // console.log()
+                        vue.orders=response.data;
+                    })
+                },
+                wait:function (args) {
+                    if(args==='send'){
+                        this.get(1)
+                        this.status=1
+                    }else if(args==='comment'){
+                        this.get(2)
+                        this.status=2
+                    }
+                },
+                confimethis(order){
+                    axios.delete('orders/'+order.id).then(function () {
+
+                        vue.get(1)
+                    })
+                },
+                formatDate(date){
+                    return new Date(date).format("yyyy-MM-dd hh:mm:ss");
+                },
+                commentthis:function (order) {
+                    this.commentorder=order;
+                    this.product=order.product
+                    $("#myModal").modal({
+                        backdrop: "static",
+                        keyboard: false,
+                    });
+
+                   //
+                },
+                addComment:function () {
+
+                    axios.post('comment',{
+                        content:vue.content,
+                        uid:vue.uid,
+                        product:vue.product,
+                        status:1,
+                        rate:vue.star,
+                        oid:vue.commentorder.id
+                    }).then(function () {
+                       vue.get(2)
+                        $("#myModal").modal('hide');
+                    })
+
+                },
+                changeRate1(n){
+                    this.star=n;
+                    this.grey_star=5-n;
+                },
+                changeRate2(n){
+                    this.star=this.star+n;
+                    this.grey_star=5-this.star;
+                },
+            }
+        })
+    })
+</script>
 <div class="wrap">
     <div class="topbar">
-        <div class="left">首页</div>
+        <div class="left"><a href="index">首页</a></div>
         <div class="right">
             <ul>
-                <li th:if="${name!=null}"  >
-                    <a th:href="@{'personPage/'+${name.id}}" th:text="${name.account}"></a>
-                </li>
-                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
-                <li><a href="/registePage">注册</a></li>
-
-
-                <!--<li><a ">个人中心</a></li>-->
-                <li><a href="/car/${name.id}">购物车</a></li>
+                <li><a :href="'/personPage?sc='+uid"></a></li>
+                <li><a :href="'/cartPage?sc='+uid">购物车</a></li>
                 <li><a href="/logout">退出</a></li>
             </ul>
         </div>
     </div>
-    <div class="center">
+    <div class="center" style="width: 1100px;margin: 30px auto 0;">
+
+        <div class="pull-left" style="width: 200px;margin-right: 50px;">
+            <div class="list-group" style="width: 200px; display: inline-block;">
+                <a href="#" class="list-group-item active">
+                    全部功能
+                </a>
+                <a href="#" class="list-group-item">我的购物车</a>
+                <a href="#" class="list-group-item">全部订单</a>
+                <a href="#" class="list-group-item">订单评价</a>
+                <a :href="'pc?sc='+uid" class="list-group-item">个人信息修改</a>
+            </div>
+            <div class="list-group" style="width: 200px; display: inline-block;">
+                <a href="#" class="list-group-item active">
+                    全部功能
+                </a>
+                <a href="#" class="list-group-item">我的购物车</a>
+                <a href="#" class="list-group-item">全部订单</a>
+                <a href="#" class="list-group-item">订单评价</a>
+                <a :href="'pc?sc='+uid" class="list-group-item">个人信息修改</a>
+            </div>
+        </div>
+
+            <div style="width: 600px;display: inline-block;vertical-align:top;margin: 0 auto;">
+                <div class="panel panel-info" >
+                    <div class="panel-heading">Panel heading</div>
+                    <div class="panel-body">
+                        <div class="mine-span">
+                            <span>待发货</span>
+                            <span @click="wait('send')">待收货</span>
+                            <span @click="wait('comment')">待评论</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel" >
+                    <div class="panel-heading" style="background:lightblue;">我购买商品</div>
+                    <table class="table" id="mine-table" >
+                            <tr v-for="order in orders" >
+                                <td> <img :src="'/static/img/product/'+order.product.id+'.jpg'" alt=""></td>
+                                <td colspan="3">
+                                    <ul>
+                                        <li>商品：<span>{{order.product.goodsname}}</span></li>
+                                        <li>时间：<span v-text="formatDate(order.product.createDate)"></span></li>
+                                    </ul>
+                                </td>
+                                <td style="vertical-align: bottom;text-align: right;">
+                                    <button @click="confimethis(order)" class="btn btn-default" v-if="status==1">确认收货</button>
+                                    <button @click="commentthis(order)" class="btn btn-default" v-if="status==2">前去评价</button>
+                                </td>
+                            </tr>
+                    </table>
 
 
+                </div>
+            </div>
+
+        <div class="right" style="display: inline-block;width: 200px;">
+            <!---->
+            <div class="panel panel-success" style="position: relative;">
+                <div class="panel-heading" style="text-align: center;color: white;background:#6ec884;"><a href="#" class="glyphicon glyphicon-time" style="position: absolute;top: 10px;left:10px;color: white;height: 100%;font-size: 17px;"></a>个人日历</div>
+                <div class="panel-body" style="background:#F8FFFA;text-align: center;">
+                    <p style="font-size: 60px; color:#55b46c;">{{date}}</p>
+                    <p style="font-size: 15px; color:#55b46c;" >星期{{weekday}}</p>
+                    <p style="font-size: 15px; color:#55b46c;">{{year_month}}</p>
+                </div>
+
+            </div>
+            <div class="img" style="margin-top: 20px;">
+                <img style="width: 200px;" border="0" src="https://img.alicdn.com/simba/img/TB1oxSPmKH2gK0jSZJnSuuT1FXa.jpg" width="300px" height="125px">
+            </div>
+        </div>
     </div>
+        <!--modal-->
+    <div class="modal fade"   id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">商品评论</h4>
+                </div>
+                <div class="modal-body" >
+                    <div class="form-group">
+                        <p v-if="product.id"><img :src="'/static/img/product/'+product.id+'.jpg'" alt="" style="width: 150px;height: 150px;"></p>
+                        商品：<span>{{product.goodsname}}</span>
+                    </div>
+                    <div class="form-group">
+                        <span>星数：</span>
+                        <span v-for="n in star">
+                             <i @click="changeRate1(n)" class="glyphicon glyphicon-star" style="color:#FFB500;"></i>
+                        </span>
+                        <span v-for="n in grey_star">
+                            <i @click="changeRate2(n)" class="glyphicon glyphicon-star-empty" ></i>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text2" class="control-label">评论内容:</label>
+                        <textarea class="form-control" id="message-text2" v-model="content"></textarea>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">我在想想</button>
+                    <button type="button" class="btn btn-info" @click="addComment">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 </body>
 </html>

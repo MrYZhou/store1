@@ -12,22 +12,31 @@
             data:{
                 uid:0,
                 carts:[],
-                orderitem:[],
-                info:{}
+                // orderitem:[],
+                info:{},
+                account:''
             },
             mounted:function () {
                 this.get();
+                for(let i=0;i< this.carts.length;i++){
+                    this.carts[i].check=true
+                }
             },methods:{
                 get:function() {
                     var uid=getUrlParms("sc")
                     var url=uri+"/"+uid;
                     this.uid=uid;
+                    axios.get('useraccount?id='+uid).then(function (value) {
+                        console.log(value.data)
+                        vue.account=value.data;
+                    })
                     axios.get(url).then(function (value) {
                         vue.carts=value.data;
                         // console.log(value.data)
 
                     })
                 },
+
                 num:function (args,obj) {
 
                     if(args===0){
@@ -39,6 +48,22 @@
                      obj.subprice=obj.product.price*obj.buynum;
 
                 },
+                add:function(cart){
+                    if(cart.check==undefined){
+                        cart.check=true;
+                    }else {
+                        cart.check=undefined;
+                    }
+                    var len=this.carts.length;
+                    for (let i=0;i<len;i++){
+                        if(this.carts[i].id==cart.id){
+                            this.carts[i].check=cart.check
+                        }
+                    }
+                },
+                goindex:function(){
+                    location.href="index"
+                },
                 createOrders:function () {
                     if(!checkEmpty(this.info.address, "地址"))
                         return;
@@ -48,19 +73,22 @@
                         return;
 
                     var arr=this.carts;
-                    console.log("arr"+arr)
                     for(var i=0;i<arr.length;i++){
-                        axios.post(orderurl,{
-                            uid:vue.uid,
-                            status:1,
-                            info:vue.info,
-                            buynum:vue.carts[i].buynum,
-                            product:arr[i].product
-                        }).then(function (response) {
-                        })
+                       if(this.carts[i].check==true){
+                           axios.post(orderurl,{
+                               uid:vue.uid,
+                               status:1,
+                               info:vue.info,
+                               buynum:arr[i].buynum,
+                               product:arr[i].product
+                           }).then(function (response) {
+
+                           })
+                       }
+
                     }
-
-
+                    $('#myModal').modal('hide');
+                   location.reload()
                 }
             }
         })
@@ -68,58 +96,106 @@
 </script>
 
 <div class="workarea">
-    <div class="cart-show">
-        <ul>
-            <li v-for="cart in carts">
-                <div>
-                    <img :src="'static/img/product/'+cart.product.id+'.jpg'" alt="">
-                </div>
-                <span>{{cart.product.goodsname}}}</span>
-                单价<span>{{cart.product.price}}</span>
-                <input type="button" value="+" @click="num(cart.buynum+1,cart)">
-                数量<input type="text" :value="cart.buynum">
-                <input type="button" value="-" @click="num(cart.buynum-1,cart)">
-                价格 <span>{{cart.subprice}}</span>
-                <a href="">删除</a>
-            </li>
-        </ul>
-    </div>
-    <div class="pay">
-        <div class="orderConfirm">
-            <button  id='modal' type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
-                确认购买
-            </button>
-        </div>
-        <div class="modal fade"   id="myModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">订单信息</h4>
-                    </div>
-                    <div class="modal-body">
+    <div class="topbar">
+        <div class="left"><a href="index">首页</a></div>
+        <div class="right">
+            <ul>
+                <li>
+                    <a :href="'/personPage?sc='+uid" >{{account}}</a>
+                </li>
 
-                        <div class="form-group">
-                            <label for="message-text" class="control-label" >地址:</label>
-                            <textarea class="form-control" id="message-text" v-model="info.address"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text2" class="control-label">联系人:</label>
-                            <input class="form-control" id="message-text2" v-model="info.name"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text3" class="control-label">电话:</label>
-                            <input class="form-control" id="message-text3" v-model="info.phone"/>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">我在想想</button>
-                        <button type="button" class="btn btn-primary" @click="createOrders">生成订单</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+                <!--<li><a ">个人中心</a></li>-->
+                <li><a :href="'/cartPage?sc='+uid">购物车</a></li>
+                <li><a href="/logout">退出</a></li>
+            </ul>
+        </div>
     </div>
+
+    <div class="cart-show" style="margin: 20px auto">
+        <div class="panel panel-info">
+            <div class="panel-heading">购物车列表</div>
+            <div class="panel-body">
+                <a @click="goindex" v-if="carts.length==0">暂无商品，去逛逛吧！</a>
+                <table class="table   table-hover"  v-if="carts.length!=0">
+                    <thead >
+                    <tr>
+
+                        <td >商品图片</td>
+                        <td>商品</td>
+                        <td>单价</td>
+                        <td>数量</td>
+                        <td>价格</td>
+                        <td>操作</td>
+                    </tr>
+                    <!--<td></td>-->
+
+                    </thead>
+                    <tr v-for="cart in carts">
+                        <td>
+
+
+                <input type="checkbox" @click="add(cart)" >
+    <img :src="'static/img/product/'+cart.product.id+'.jpg'" alt="">
+
+                        </td>
+                        <td>{{cart.product.goodsname}}</td>
+                        <td >{{cart.product.price}}</td>
+                        <td>
+
+                            <input type="button" value="+" @click="num(cart.buynum+1,cart)">
+                            <input type="text" :value="cart.buynum" style="width: 50px;text-align: center;">
+                            <input type="button" value="-" @click="num(cart.buynum-1,cart)">
+
+
+                        </td>
+                        <td style="color: indianred;">
+                            {{cart.subprice}}￥
+                        </td>
+                        <td><a href="">删除</a></td>
+                    </tr>
+                </table>
+                <div class="pay">
+                    <div class="orderConfirm right">
+                        <button  id='modal' type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal">
+                            确认购买
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade"   id="myModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">订单信息</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="message-text" class="control-label" >地址:</label>
+                        <textarea class="form-control" id="message-text" v-model="info.address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text2" class="control-label">联系人:</label>
+                        <input class="form-control" id="message-text2" v-model="info.name"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text3" class="control-label">电话:</label>
+                        <input class="form-control" id="message-text3" v-model="info.phone"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">我在想想</button>
+                    <button type="button" class="btn btn-primary" @click="createOrders">生成订单</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 </body>
 </html>

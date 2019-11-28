@@ -12,8 +12,12 @@ import java.util.List;
 public class CartService {
     @Autowired
     CartDAO cartDAO;
-
-
+    public void deleteBean(Cart cart){
+        cartDAO.delete(cart);
+    }
+    public Cart getCart(int id){
+        return cartDAO.getOne(id);
+    }
     public List<Cart> getCartProducts(int uid){
         List<Cart> products=cartDAO.findAllByUidEquals(uid);
         return  products;

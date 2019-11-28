@@ -25,7 +25,9 @@ public class OrderItemService {
     public List<OrderItem> findAllUserOrders(int uid,int status){
         return orderItemDAO.findAllByUidEqualsAndStatusEquals(uid,status);
     }
-
+    public  void deleteBean(int id){
+        orderItemDAO.deleteById(id);
+    }
     public Page4Navigator<OrderItem> list(int start, int size, int navigatePages) {
         PageRequest pageable=PageRequest.of(start,size, Sort.Direction.DESC, "id");
         Page pageFromJPA =orderItemDAO.findAll(pageable);//返回分页对象

@@ -97,16 +97,16 @@
 <div class="wrap">
     <input type="hidden"  id="uid" th:if="${name!=null}" th:value="${name.id}">
     <div class="topbar">
-        <div class="left">首页</div>
+        <div class="left"><a href="index">首页</a></div>
         <div class="right">
             <ul>
                 <li th:if="${name!=null}"  >
-                    <a th:href="@{'personPage'}" th:text="${name.account}"></a>
+                    <a :href="'/personPage?sc='+uid" th:text="${name.account}"></a>
                 </li>
                 <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
                 <li th:if="${name==null}"><a href="/registePage">注册</a></li>
                 <!--<li><a ">个人中心</a></li>-->
-                <li><a :href="'/carts/'+uid">购物车</a></li>
+                <li><a :href="'/cartPage?sc='+uid">购物车</a></li>
                 <li><a href="/logout">退出</a></li>
             </ul>
         </div>
