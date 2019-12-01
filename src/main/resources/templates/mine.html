@@ -32,12 +32,14 @@
                 product:{},
                 star:0,
                 grey_star:5,
-                commentorder:{}
+                commentorder:{},
+                confirm_length:0,
+                comment_length:0
             },mounted:function () {
                 var uid=getUrlParms("sc");
                 this.uid=uid;
                 this.get(1)
-
+                this.get(2)
                 var day = new Date();
                 this.year_month=day.getFullYear()+"." + (day.getMonth()+1);
                 this.date=day.getDate();
@@ -45,10 +47,14 @@
             }
             ,methods:{
                 get:function (status) {
-                    // alert("status"+status)
                     axios.get('orders/'+this.uid+"/"+status).then(function (response) {
-                        // console.log()
                         vue.orders=response.data;
+                        if(status==1){
+                            vue.confirm_length=vue.orders.length;
+                        }else{
+                            vue.comment_length=vue.orders.length;
+                        }
+
                     })
                 },
                 wait:function (args) {
@@ -62,7 +68,6 @@
                 },
                 confimethis(order){
                     axios.delete('orders/'+order.id).then(function () {
-
                         vue.get(1)
                     })
                 },
@@ -146,8 +151,8 @@
                     <div class="panel-body">
                         <div class="mine-span">
                             <span>待发货</span>
-                            <span @click="wait('send')">待收货</span>
-                            <span @click="wait('comment')">待评论</span>
+                            <span @click="wait('send')">待收货 <i class="badge" >{{confirm_length}}</i></span>
+                            <span @click="wait('comment')">待评论 <i class="badge" >{{comment_length}}</i></span>
                         </div>
                     </div>
                 </div>

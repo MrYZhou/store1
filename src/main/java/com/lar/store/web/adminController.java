@@ -40,4 +40,10 @@ public class adminController {
     public String orders_detail(){
         return  "orders_detail";
     }
+
+    //跳转链接，property
+    @RequestMapping(value = "/admin_propertyValue_edit")
+    public String adminPropertyPage(){
+        return "property_list";
+    }
 }

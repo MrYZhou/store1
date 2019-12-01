@@ -98,12 +98,12 @@
             <ul>
 
                 <li th:if="${name!=null}"  >
-                    <a :href="'/personPage?sc='+uid" th:text="${name.account}"></a>
+                    <a :href="'/personPage?sc='+uid" th:text="${name.account}" target="_blank"></a>
                 </li>
                 <li th:if="${name==null}"><a href="/loginPage" target="_blank" id="login">登录</a></li>
                 <li th:if="${name==null}"><a href="/registePage">注册</a></li>
                 <!--<li><a ">个人中心</a></li>-->
-                <li><a :href="'/cartPage?sc='+uid">购物车</a></li>
+                <li><a :href="'/cartPage?sc='+uid" >购物车</a></li>
                 <li><a href="/logout">退出</a></li>
             </ul>
         </div>
@@ -122,18 +122,19 @@
                             <span>{{product.goodsname}}</span>
                         </li>
                         <li>
-                            <span>价格</span><sup>￥</sup><strong>{{product.price}}</strong>
+                            <span>价格</span><strong style="color: red"><sup>￥</sup>{{product.price}}</strong>
                         </li>
                         <li>
-                            <span>已售</span><i>0</i>件
+                            <span>已售</span><i>{{product.salenum}}</i>&nbsp;&nbsp;件
                         </li>
                         <li>
-                            数量<input type="text" :value="buynum">
-                            <input type="button" value="+" @click="num(buynum+1)">
-                            <input type="button" value="-" @click="num(buynum-1)">
+                            <span> 数量</span><input type="text" :value="buynum">
+                            <input type="button" value="+" @click="num(buynum+1)" style="width: 20px;height: 20px;">
+                            <input type="button" value="-" @click="num(buynum-1)" style="width: 20px;height: 20px;">
                         </li>
                         <li>
-                            价格 <sup>￥</sup><span>{{totalprice}}</span>
+
+                            <span>价格</span><strong style="color: red"><sup>￥</sup>{{totalprice}}</strong>
                         </li>
                     </ul>
                     <div class="buy left"><a :href="'/buyPage?id='+product.id+'&buynum='+buynum">立即购买</a></div>

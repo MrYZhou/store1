@@ -11,7 +11,11 @@
             beans: [],
             bean: {id:0,name:'',price:99.98,stock:99,category:{'id':0}},
             pagination:{},
-            category:''
+            category:'',
+            chooseid:0,
+            key:'',
+            value:'',
+            pid:0
         };
 
         //ViewModel
@@ -79,6 +83,34 @@
                 },
                 jumpByNumber: function(start){
                     jumpByNumber(start,vue);
+                },
+                addProperty:function(id){
+                    this.pid=id;
+                    $("#myModal").modal({
+                        backdrop: "static",
+                        keyboard: false,
+                    });
+                },
+                addSecond:function () {
+                    if(this.second_key===''||this.second_value===''){
+                        confirm("先设置好一个")
+                    }else{
+                        axios.post('property',{
+                            pid:vue.pid,
+                            property_key:vue.key,
+                            property_value:vue.value
+                        }).then(function () {
+                            vue.key=''
+                            vue.value=''
+                        })
+
+
+                    }
+
+
+                },
+                confirmAdd:function () {
+                    $("#myModal").modal('hide')
                 }
             }
 
@@ -125,7 +157,7 @@
                     <a :href="'admin_productImage_list?pid=' + bean.id "><span class="glyphicon glyphicon-picture"></span></a>
                 </td>
                 <td>
-                    <a :href="'admin_propertyValue_edit?pid=' + bean.id "><span class="glyphicon glyphicon-th-list"></span></a>
+                    <a @click="addProperty(bean.id)" ><span class="glyphicon glyphicon-th-list"></span></a>
                 </td>
                 <td>
                     <a :href="'admin_product_edit?id=' + bean.id "><span class="glyphicon glyphicon-edit"></span></a>
@@ -139,6 +171,32 @@
     </div>
 
     <div th:replace="include/adminPage::html" ></div>
+
+    <!--模态框开始-->
+    <div class="modal fade" tabindex="-1" id="myModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">商品属性</h4>
+                </div>
+                <div class="modal-body">
+
+                        key：<input v-model="key" id="key" type="text" class="form-control" placeholder="二级属性" aria-describedby="basic-addon1">
+                        value:<input v-model="value" id="value" type="text" class="form-control" placeholder="二级值" aria-describedby="basic-addon1">
+                    <button class="btn btn-info" @click="addSecond" style="margin-top:10px;">
+                        添加属性
+                    </button>
+
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" @click="confirmAdd">好了</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <div class="panel panel-warning addDiv">
         <div class="panel-heading">新增产品</div>

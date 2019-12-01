@@ -3,9 +3,11 @@ package com.lar.store.web;
 import com.lar.store.pojo.Cart;
 import com.lar.store.pojo.Info;
 import com.lar.store.pojo.OrderItem;
+import com.lar.store.pojo.Product;
 import com.lar.store.service.CartService;
 import com.lar.store.service.InfoService;
 import com.lar.store.service.OrderItemService;
+import com.lar.store.service.ProductService;
 import com.lar.store.util.MyTime;
 import com.lar.store.util.Page4Navigator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class order {
     InfoService infoService;
     @Autowired
     CartService cartService;
+    @Autowired
+    ProductService productService;
     @PostMapping("/info")
     private int order_info(@RequestBody OrderItem orderItem){
         //这里的话需要存入orderitem.和info表
@@ -73,6 +77,12 @@ public class order {
         OrderItem orderItem=orderItemService.getOrderItem(oid);
         orderItem.setStatus(2);
         orderItemService.change_order_status(orderItem);
+        //同时由于已经是收货的状态，所以我们还需要更改货品的salenum字段才可以,
+        //首选需要获取到要更改的product
+        int pid=orderItem.getProduct().getId();
+        Product product=productService.getProductById(pid);
+                product.setSalenum(product.getSalenum()+1);
+        productService.add(product);
         return "1";
     }
 }

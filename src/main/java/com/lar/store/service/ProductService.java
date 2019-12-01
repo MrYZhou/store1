@@ -31,7 +31,10 @@ public class ProductService {
     public void add(Product bean) {
         productDAO.save(bean);
     }
-
+    //根据id查询对象，获取商品对象
+    public Product getProductById(int id){
+        return productDAO.getOne(id);
+    }
     //删除商品
     public void deleteBean(int id){
         productDAO.deleteById(id);
@@ -45,5 +48,6 @@ public class ProductService {
         return productDAO.getOne(id);
     }
     //更改商品
+
 
 }
