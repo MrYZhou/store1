@@ -11,7 +11,6 @@ public class Info {
     private String name;
     String address;
     int phone;
-//   int uid;
 
     @Override
     public String toString() {

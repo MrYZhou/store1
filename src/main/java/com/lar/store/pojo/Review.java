@@ -13,7 +13,6 @@ public class Review {
     int id;
     int rate;
     String content;
-
     private  int uid;
     @ManyToOne
     @JoinColumn(name="pid")

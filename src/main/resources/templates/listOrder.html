@@ -5,8 +5,6 @@
 <script>
 
     $(function () {
-
-
         var vue=new Vue({
             el:'#workingArea',
             data:{
@@ -22,8 +20,7 @@
             methods:{
                 list:function (start) {
                     axios.get('orders?start='+start).then(function (response) {
-                        // console.log(response)
-                        // console.log(response.data.content)
+
                         vue.orderitems=response.data.content
                         vue.pagination = response.data;
 

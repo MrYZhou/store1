@@ -16,7 +16,7 @@ public class User {
     private String account;
     private String pwd;
 
-    private int infokey;
+//    private int infokey;
 
     public int getId() {
         return id;
@@ -42,21 +42,21 @@ public class User {
         this.pwd = pwd;
     }
 
-    public int getInfokey() {
-        return infokey;
-    }
+//    public int getInfokey() {
+//        return infokey;
+//    }
+//
+//    public void setInfokey(int infokey) {
+//        this.infokey = infokey;
+//    }
 
-    public void setInfokey(int infokey) {
-        this.infokey = infokey;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", account='" + account + '\'' +
-                ", pwd='" + pwd + '\'' +
-                ", infokey=" + infokey +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "id=" + id +
+//                ", account='" + account + '\'' +
+//                ", pwd='" + pwd + '\'' +
+//                ", infokey=" + infokey +
+//                '}';
+//    }
 }

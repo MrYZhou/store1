@@ -28,7 +28,7 @@ public class Product {
 
     //给当前表增加一个cid外键
     @ManyToOne
-    @JoinColumn(name="cid")
+    @JoinColumn(name="cid",foreignKey = @ForeignKey(name = "none",value = ConstraintMode.NO_CONSTRAINT))
     private Category category;
 
     public Product() {

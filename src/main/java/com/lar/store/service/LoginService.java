@@ -21,7 +21,7 @@ public class LoginService {
             return true;
         }
     }
-    //获取用户对象
+    //获取用户对象通过用户账号
     public User getUser(String a) {
         return userMapper.findUserByAccount(a);
     }
@@ -29,6 +29,11 @@ public class LoginService {
     public String get_pwd(String a) {
         User u=userMapper.findUserByAccount(a);
         return u.getPwd();
+    }
+
+    //获取用户通过账号和密码
+    public User getUserByAccountAndPwd(String account ,String pwd){
+        return userMapper.findUserByAccountEqualsAndPwdEquals(account, pwd);
     }
 
 }

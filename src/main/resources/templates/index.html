@@ -9,25 +9,50 @@
         var vue=new Vue({
             el:".wrap",
             data:{
-                cid:8,
+                cid:0,
                 uri:"products",
                 beans:[],
                 pagination:{},
                 sdirection:1,
                 pdirection:1,
-                uid:0
-
+                uid:0,
+                user:{id:0},
+                categories:[]
             },
             mounted:function () {
-                this.list(0,this.cid);
+                this.get()
+                this.login();
+
+
             },
             created:function(){
                 this.uid=$('#uid').val()
             },
             methods:{
-                change:function(cid){
-                    this.cid=cid;
-                    list(0,cid)
+                get:function(){
+                    axios.get('listcategory').then(function (value,err) {
+                        vue.categories=value.data;
+                        vue.list(0,vue.categories[0].id);
+                    })
+
+                },
+                login:function(){
+                  axios.get('cookie').then(function (value) {
+                      console.log(value.data)
+                      if(value.data.id!=undefined){
+                          //vue.uid=value.data.id
+                          vue.user=value.data
+                      }else{
+                      }
+                  })
+                },
+                change:function(args){
+                    // axios.get('category?name='+args).then(function (val) {
+                    //     alert(val.data)
+                    //
+                    // })
+                    vue.cid = args
+                    this.list(0,args)
                 },
                 getCategory:function(cid){
                     var url = "categories/"+cid;
@@ -100,14 +125,14 @@
         <div class="left"><a href="index">首页</a></div>
         <div class="right">
             <ul>
-                <li th:if="${name!=null}"  >
-                    <a :href="'/personPage?sc='+uid" th:text="${name.account}"></a>
+
+                <li v-if="user.id!=0">
+                    <a :href="'/personPage?sc='+user.id" v-text="user.account"></a>
                 </li>
-                <li th:if="${name==null}"><a href="/loginPage">登录</a></li>
-                <li th:if="${name==null}"><a href="/registePage">注册</a></li>
-                <!--<li><a ">个人中心</a></li>-->
-                <li><a :href="'/cartPage?sc='+uid">购物车</a></li>
-                <li><a href="/logout">退出</a></li>
+                <li v-if="user.id==0"><a href="/loginPage">登录</a></li>
+                <li v-if="user.id==0"><a href="/registePage">注册</a></li>
+                <li v-if="user.id!=0"><a :href="'/cartPage?sc='+uid">购物车</a></li>
+                <li v-if="user.id!=0"><a href="/logout">退出</a></li>
             </ul>
         </div>
     </div>
@@ -136,10 +161,10 @@
         </div>
         <div class="p-show w900">
             <div class="left-content left">
-                <ul class="left-menu">
-                    <li><span>全部分类</span></li>
-                    <li @click="change(8)"><a href="">cpu<b> > </b></a></li>
-                    <li @click="change(8)"><a href="">显卡<b> > </b></a></li>
+                <span>全部分类</span>
+                <ul class="left-menu" >
+
+                    <li v-for="category in categories" @click="change(category.id)"><a href="#">{{category.name}}<b> > </b></a></li>
                 </ul>
             </div>
             <div class="right-content right">

@@ -20,7 +20,7 @@ public class registe {
     @RequestMapping(value = "registe",method = RequestMethod.POST)
     public ModelAndView doregiste(User user){
         System.out.println(user);
-        user.setInfokey(0);
+//        user.setInfokey(0);
         registeService.addAccount(user);
         return new ModelAndView("/login");
 

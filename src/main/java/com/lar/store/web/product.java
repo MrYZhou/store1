@@ -5,6 +5,7 @@ import com.lar.store.pojo.Product;
 import com.lar.store.service.ProductService;
 import com.lar.store.util.ImageUtil;
 import com.lar.store.util.Page4Navigator;
+import com.lar.store.util.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class product {
     //商品添加
     @PostMapping("/products")
     public Object add(Product bean, MultipartFile image, HttpServletRequest request) throws Exception {
-        System.out.println(bean);
+//        System.out.println(bean);
         Date now=new Date();
         SimpleDateFormat sfd= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         now=sfd.parse(sfd.format(now));
@@ -37,7 +38,6 @@ public class product {
     public void saveOrUpdateImageFile(Product bean, MultipartFile image, HttpServletRequest request)
             throws IOException {
         String uri= ClassUtils.getDefaultClassLoader().getResource("").getPath()+"static/img/product";
-        //  System.out.println("图片保存路径"+uri);
         File imageFolder= new File(uri);
         File file = new File(imageFolder,bean.getId()+".jpg");
         if(!file.getParentFile().exists())
@@ -51,7 +51,9 @@ public class product {
     @GetMapping("/categories/{cid}/products")
     public Page4Navigator<Product> list(@PathVariable("cid") int cid, @RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) throws Exception {
         start = start<0?0:start;
+       ProductService productService = SpringContextUtil.getBean(ProductService.class);
         Page4Navigator<Product> page =productService.list(cid, start, size,5 );
+        System.out.println("ok");
         return page;
     }
 
@@ -66,7 +68,6 @@ public class product {
     @GetMapping("/products/{id}")
     public Product get(@PathVariable("id") int id) throws Exception {
         Product bean=productService.get(id);
-        System.out.println("kkkkkkkk"+bean);
         return bean;
     }
 }
