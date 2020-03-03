@@ -15,11 +15,7 @@ public class LoginService {
     //判断登录用户是否存在
     public boolean checkAccount(String a) {
         User u=userMapper.findUserByAccount(a);
-        if(u==null){
-            return false;
-        }else{
-            return true;
-        }
+        return u != null;
     }
     //获取用户对象通过用户账号
     public User getUser(String a) {

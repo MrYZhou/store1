@@ -7,5 +7,5 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryDAO extends JpaRepository<Category,Integer> {
-        public  Category getCategoryByNameIsLike(String name);
+        Category getCategoryByNameIsLike(String name);
 }

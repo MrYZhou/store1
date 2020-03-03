@@ -20,12 +20,12 @@
             }
             , methods: {
                 get: function (status) {
-                    this.totalprice=0
+                    this.totalprice=0;
                     var uid = getUrlParms("sc");
                     this.uid = uid;
                     axios.get('orders/'+uid+'/'+status).then(function (value) {
                         vue.beans=value.data;
-                        console.log(vue.beans)
+                        console.log(vue.beans);
                         for ( bean of vue.beans){
                             vue.totalprice+=bean.product.price*bean.buynum
                         }
@@ -44,8 +44,8 @@
                },
 
                 confirmALL:function () {
-                    var re=confirm("是否全部处理")
-                    if (re==false)return
+                    var re=confirm("是否全部处理");
+                    if (re==false)return;
                     for ( bean of vue.beans){
                         axios.delete('orders/'+bean.id).then(function (response) {
                             if(response.status==200){

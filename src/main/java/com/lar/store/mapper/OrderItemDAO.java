@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderItemDAO extends JpaRepository<OrderItem,Integer> {
 
-    public List<OrderItem>  findAllByUidEqualsAndStatusEquals(int id,int status);//找到该用户的所有订单项
-    public List<OrderItem> findAll();
-    public List<OrderItem> findAllByUid(int uid);
+    List<OrderItem>  findAllByUidEqualsAndStatusEquals(int id, int status);//找到该用户的所有订单项
+    List<OrderItem> findAll();
+    List<OrderItem> findAllByUid(int uid);
 }

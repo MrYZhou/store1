@@ -21,7 +21,7 @@
                 list:function (start) {
                     axios.get('orders?start='+start).then(function (response) {
 
-                        vue.orderitems=response.data.content
+                        vue.orderitems=response.data.content;
                         vue.pagination = response.data;
 
                     })

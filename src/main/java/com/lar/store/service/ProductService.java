@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
-
 import java.io.File;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class ProductService {
     @Autowired
     CategoryService categoryService;
     //获取类别下的所有商品
-//    @Cacheable(key="'products-cid-'+ #p0.id")
+   @Cacheable(key="'products-cid-'+ #p0.id")
     public List<Product> getAllProductByCid(int cid){
         List<Product> allByCategoryOrderByIdDesc = productDAO.findAllById(cid);
         System.out.println(allByCategoryOrderByIdDesc);
@@ -42,17 +41,19 @@ public class ProductService {
         return new Page4Navigator<>(pageFromJPA,navigatePages);
     }
     //添加商品
-//    @CacheEvict(allEntries=true)
+    @CacheEvict(allEntries=true)
     public void add(Product bean) {
-        productDAO.save(bean);
+       productDAO.save(bean);
     }
+
     //根据id查询对象，获取商品对象
     public Product getProductById(int id){
         return productDAO.getOne(id);
     }
     //删除商品
-//    @CacheEvict(allEntries=true)
+    @CacheEvict(allEntries=true)
     public void deleteBean(int id){
+
         productDAO.deleteById(id);
         String uri= ClassUtils.getDefaultClassLoader().getResource("").getPath()+"static/img/product";
         File imageFolder= new File(uri);
@@ -64,7 +65,7 @@ public class ProductService {
     public Product get(int id) {
         return productDAO.getOne(id);
     }
-    //更改商品
+
 
 
 }

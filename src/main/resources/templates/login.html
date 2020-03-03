@@ -12,10 +12,10 @@
                 pwd:''
             },
             mounted:function () {
-                var user=JSON.parse(localStorage.getItem('user'))
-                console.log(user)
+                var user=JSON.parse(localStorage.getItem('user'));
+                console.log(user);
                 if(user!=undefined){
-                    this.account=user.account
+                    this.account=user.account;
                     this.pwd=user.pwd
 
                 }
@@ -93,7 +93,7 @@
         //提交form表单
         var account= $("input").eq(0).val();
         var pwd=$("input").eq(1).val();
-        checkEmpty(account,"账号")
+        checkEmpty(account,"账号");
         checkEmpty(pwd,"密码")
 
         // axios.post("login").then(function(response){

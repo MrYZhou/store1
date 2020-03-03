@@ -6,7 +6,7 @@
     $(function () {
         var infourl='info';//上传至info,和orderitem
         var orderurl='';
-        var uri='products'
+        var uri='products';
         var vue=new Vue({
             el:'.workarea',
             data:{
@@ -30,7 +30,7 @@
                     //发送请求详情页的数据，product，review,property
                     var url=uri+"/"+this.pid;
                     axios.get(url).then(function (response) {
-                        vue.product=response.data
+                        vue.product=response.data;
                         vue.totalprice=(vue.product.price)*vue.buynum;
                     })
                 },

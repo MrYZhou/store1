@@ -1,14 +1,21 @@
 package com.lar.store.pojo;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Proxy;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.lang.Nullable;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name="product")
 @JsonIgnoreProperties({ "handler","hibernateLazyInitializer"})
-public class Product {
+@Proxy(lazy = false)
+@Document(indexName = "store",type = "product")
+public class Product  implements  Serializable{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -29,6 +36,8 @@ public class Product {
     //给当前表增加一个cid外键
     @ManyToOne
     @JoinColumn(name="cid",foreignKey = @ForeignKey(name = "none",value = ConstraintMode.NO_CONSTRAINT))
+    @NotFound(action= NotFoundAction.IGNORE)
+    @Nullable
     private Category category;
 
     public Product() {

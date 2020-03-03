@@ -43,15 +43,15 @@
         }else {
         }
         console.log(account,pwd);
-   })
+   });
 
     $("input").eq(0).blur(function () {
         //发送请求，优化逻辑
-        console.log("发送请求")
+        console.log("发送请求");
         axios.get("/checkaccount?account="+$("input").eq(0).val()).then(function(response){
-            console.log(response)
+            console.log(response);
            if(response.data==1){
-               confirm("用户名已存在")
+               confirm("用户名已存在");
                $("input").eq(0).val("");
                $("input").eq(0).focus()
            }

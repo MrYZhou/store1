@@ -20,7 +20,7 @@
                 categories:[]
             },
             mounted:function () {
-                this.get()
+                this.get();
                 this.login();
 
 
@@ -38,7 +38,7 @@
                 },
                 login:function(){
                   axios.get('cookie').then(function (value) {
-                      console.log(value.data)
+                      console.log(value.data);
                       if(value.data.id!=undefined){
                           //vue.uid=value.data.id
                           vue.user=value.data
@@ -51,7 +51,7 @@
                     //     alert(val.data)
                     //
                     // })
-                    vue.cid = args
+                    vue.cid = args;
                     this.list(0,args)
                 },
                 getCategory:function(cid){
@@ -64,7 +64,7 @@
                 list:function(start,cid){
                     var url =  "categories/"+cid+"/"+this.uri+"?start="+start;
                     axios.get(url).then(function(response) {
-                        console.log(response)
+                        console.log(response);
                         vue.pagination = response.data;//分页的属性
                         vue.beans = response.data.content;
                     });
@@ -88,8 +88,8 @@
                             )
                         }else {
                             arr.sort(function (a,b) {
-                                a=a.salenum
-                                b=b.salenum
+                                a=a.salenum;
+                                b=b.salenum;
                                 return (b-a);
                             })
                         }
@@ -99,14 +99,14 @@
                     if(args==='price'){
                         if((this.pdirection)==-1){
                             arr.sort(function (a,b) {
-                                a=a.price
-                                b=b.price
+                                a=a.price;
+                                b=b.price;
                                 return (b-a);
                             })
                         }else {
                             arr.sort(function (a,b) {
-                                a=a.price
-                                b=b.price
+                                a=a.price;
+                                b=b.price;
                                 return -(b-a);
                             })
                         }

@@ -1,6 +1,8 @@
 package com.lar.store.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 
@@ -11,6 +13,7 @@ import javax.persistence.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY,generator = "id")
+    @NotFound(action= NotFoundAction.IGNORE)
     @Column(name = "id")
     int id;
     String name;

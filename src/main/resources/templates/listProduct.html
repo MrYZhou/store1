@@ -37,7 +37,7 @@
                 list:function(start){
                     var url =  "categories/"+cid+"/"+this.uri+"?start="+start;
                     axios.get(url).then(function(response) {
-                        console.log(response)
+                        console.log(response);
                         vue.pagination = response.data;
                         vue.beans = response.data.content;
                     });
@@ -63,7 +63,7 @@
                     formData.append("category", this.bean.category.id);
                     axios.post(url,formData).then(function(response){
                         vue.list(0);
-                        vue.bean =  {id:0,name:'','price':99.98,'stock':99,category:{'id':0}}
+                        vue.bean =  {id:0,name:'','price':99.98,'stock':99,category:{'id':0}};
                         this.bean.category.id=cid;
                     });
                 },
@@ -100,7 +100,7 @@
                             property_key:vue.key,
                             property_value:vue.value
                         }).then(function () {
-                            vue.key=''
+                            vue.key='';
                             vue.value=''
                         })
 

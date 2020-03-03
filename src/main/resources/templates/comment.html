@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:include="include/adminHeader::html('商品评论页')" >
+<body>
+<script>
+    $(function () {
+        var vue=new Vue({
+            el:'.wrap',
+            data:{
+                uid:0,
+            },mounted:function () {
+                this.get()
+            },methods:{
+                get:function () {
+                    var uid=getUrlParms("sc");
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

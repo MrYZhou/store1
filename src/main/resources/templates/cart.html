@@ -5,8 +5,8 @@
 <script>
 
     $(function () {
-        var uri='carts'
-        var orderurl="orders"
+        var uri='carts';
+        var orderurl="orders";
         var vue=new Vue({
             el:'.workarea',
             data:{
@@ -23,13 +23,13 @@
                 }
             },methods:{
                 get:function() {
-                    var uid=getUrlParms("sc")
+                    var uid=getUrlParms("sc");
                     var url=uri+"/"+uid;
                     this.uid=uid;
                     axios.get('useraccount?id='+uid).then(function (value) {
-                        console.log(value.data)
+                        console.log(value.data);
                         vue.account=value.data;
-                    })
+                    });
                     axios.get(url).then(function (value) {
                         vue.carts=value.data;
                         // console.log(value.data)
@@ -40,7 +40,7 @@
                 num:function (args,obj) {
 
                     if(args===0){
-                        confirm("数量至少为1")
+                        confirm("数量至少为1");
                         obj.buynum=1;
                     }else{
                         obj.buynum=args;

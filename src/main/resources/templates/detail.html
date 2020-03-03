@@ -5,7 +5,7 @@
 <body>
 <script>
     $(function () {
-        var uri='products'
+        var uri='products';
 
         var vue=new Vue({
             el:'#detail',
@@ -39,14 +39,14 @@
             },
             methods:{
                 list:function(){
-                    console.log("vuepod"+this.pid)
+                    console.log("vuepod"+this.pid);
                   axios.get('comment?pid='+this.pid).then(function (value) {
-                      vue.comments=value.data
+                      vue.comments=value.data;
                       for(var i=0;i<vue.comments.length;i++){
                           var uid=vue.comments[i].uid;
                           axios.get('username?uid='+uid).then(function (value) {
                               vue.names.push(value.data)
-                          })
+                          });
                           if(vue.comments[i].rate>3){
                               vue.good_rate++;
                           }else if(vue.comments[i].rate<3){
@@ -64,8 +64,8 @@
                       // alert(vue.good_rate)
                       // alert(vue.bad_rate)
                       // alert(vue.normal_rate)
-                      vue.width1.width=vue.good_rate+"%"
-                      vue.width2.width=vue.normal_rate+"%"
+                      vue.width1.width=vue.good_rate+"%";
+                      vue.width2.width=vue.normal_rate+"%";
                       vue.width3.width=vue.bad_rate+"%"
                   })
                 },
@@ -76,10 +76,10 @@
                     //发送请求详情页的数据，product，review,property
                     var url=uri+"/"+this.pid;
                     axios.get(url).then(function (response) {
-                        vue.product=response.data
+                        vue.product=response.data;
                         vue.buynum=1;
                         vue.totalprice=(vue.product.price)*vue.buynum;
-                    })
+                    });
                     axios.get("property/"+this.pid).then(function (response) {
                         vue.beans=response.data;
 
@@ -94,8 +94,8 @@
                         account:vue.account,
                         pwd:vue.pwd,
                     }).then(function (value) {
-                        vue.uid=value.data.id
-                        console.log(vue.uid)
+                        vue.uid=value.data.id;
+                        console.log(vue.uid);
                         // vue.user=value.data
                         $('#myModal').modal('hide');
                         window.location.reload()
@@ -123,9 +123,9 @@
 
                 },
                 num:function (args) {
-                    console.log("price"+this.totalprice)
+                    console.log("price"+this.totalprice);
                     if(args===0){
-                        confirm("数量至少为1")
+                        confirm("数量至少为1");
                         this.buynum=1;
                     }else{
                         this.buynum=args;
@@ -135,7 +135,7 @@
                 },
                 changeshow:function (index) {
                     $('#property span').removeClass('current-c');
-                    $('#property span').eq(index).addClass('current-c')
+                    $('#property span').eq(index).addClass('current-c');
 
                     this.index=index;
                 },

@@ -16,9 +16,6 @@ public class RegisteService {
     }
     public boolean checkAccount(String account){
         User u=registeMapper.findUserByAccount(account);
-        if(u==null){
-            return  false;
-        }
-        return  true;//true代表有
+        return u != null;//true代表有
     }
 }

@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface ProductDAO extends JpaRepository<Product,Integer> {
 //        public List<Product> findAllByCategoryOrderByIdDesc(int cid);
-        public List<Product> findAllById(int cid);
+List<Product> findAllById(int cid);
         Page<Product> findByCategory(Category category, Pageable pageable);
 }
